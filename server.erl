@@ -8,6 +8,11 @@ listen_to_connections(Port) ->
     ok = gen_tcp:close(AcceptSocket).
 
 recv_loop(Socket) ->
-    {ok, Data} = gen_tcp:recv(Socket, 0),
-    io:format("Message: ~p~n",[Data]),
-    recv_loop(Socket).
+    Answer = gen_tcp:recv(Socket, 0),
+    case Answer of
+        {ok, Data} ->
+            io:format("Message: ~p~n",[Data]),
+            recv_loop(Socket);
+        {error, Reason} ->
+            io:format("Error in connection: ~p~n",[Reason])
+    end.
